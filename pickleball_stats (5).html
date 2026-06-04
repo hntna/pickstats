@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLB Pickleball VTNet – Thống Kê Quý 3/2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f4ff;
+  --white: #ffffff;
+  --surface: #ffffff;
+  --surface2: #f7f9ff;
+  --border: #e2e8f8;
+  --primary: #3b5bdb;
+  --primary-light: #eef2ff;
+  --orange: #f76707;
+  --orange-light: #fff4e6;
+  --green: #2f9e44;
+  --green-light: #ebfbee;
+  --red: #e03131;
+  --red-light: #fff5f5;
+  --yellow: #f59f00;
+  --yellow-light: #fff9db;
+  --purple: #7048e8;
+  --purple-light: #f3f0ff;
+  --text: #1a1f36;
+  --muted: #8898aa;
+  --shadow: 0 4px 20px rgba(59,91,219,.10);
+  --shadow-lg: 0 8px 40px rgba(59,91,219,.16);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Decorative background blobs */
+body::before, body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+body::before {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(59,91,219,.08) 0%, transparent 70%);
+  top: -200px; right: -200px;
+}
+body::after {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(247,103,7,.07) 0%, transparent 70%);
+  bottom: -150px; left: -150px;
+}
+
+.container { max-width: 1120px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+/* ── HEADER ── */
+header {
+  padding: 36px 0 28px;
+  margin-bottom: 32px;
+}
+.header-inner { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+
+.logo-wrap {
+  position: relative;
+  width: 72px; height: 72px; flex-shrink: 0;
+}
+.logo-circle {
+  width: 72px; height: 72px;
+  background: linear-gradient(135deg, var(--primary) 0%, #748ffc 100%);
+  border-radius: 22px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  box-shadow: 0 8px 24px rgba(59,91,219,.35);
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+.logo-badge {
+  position: absolute; bottom: -4px; right: -6px;
+  background: var(--orange);
+  color: #fff; font-size: 10px; font-weight: 800;
+  padding: 2px 7px; border-radius: 20px;
+  letter-spacing: .5px; border: 2px solid var(--bg);
+}
+
+.header-text h1 {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(28px, 4.5vw, 46px);
+  color: var(--primary);
+  letter-spacing: 1px; line-height: 1;
+}
+.header-text .tagline {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 2px; margin-top: 6px;
+}
+.tagline-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); }
+
+.period-pill {
+  margin-left: auto;
+  background: linear-gradient(135deg, var(--primary) 0%, #748ffc 100%);
+  color: #fff;
+  padding: 12px 22px; border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(59,91,219,.30);
+}
+.period-pill .pq { font-family: 'Fredoka One', sans-serif; font-size: 22px; letter-spacing: 1px; }
+.period-pill .pn { font-size: 11px; opacity: .8; margin-top: 2px; font-weight: 600; }
+
+/* ── STAT CARDS ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px; margin-bottom: 32px;
+}
+.stat-card {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 20px 22px;
+  box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 16px;
+  border: 2px solid transparent;
+  transition: transform .2s, box-shadow .2s;
+}
+.stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.stat-icon {
+  width: 52px; height: 52px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; flex-shrink: 0;
+}
+.stat-card .s-label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.stat-card .s-value { font-family: 'Fredoka One', sans-serif; font-size: 32px; line-height: 1.1; margin-top: 2px; }
+.stat-card .s-sub { font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 1px; }
+
+/* ── TABS ── */
+.tabs {
+  display: flex; gap: 8px; margin-bottom: 24px;
+  background: var(--surface); border-radius: 18px;
+  padding: 6px; box-shadow: var(--shadow);
+  flex-wrap: wrap;
+}
+.tab-btn {
+  flex: 1; min-width: 120px;
+  background: transparent; border: none;
+  color: var(--muted); padding: 10px 16px;
+  border-radius: 13px; cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px; font-weight: 700;
+  transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--primary); background: var(--primary-light); }
+.tab-btn.active {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(59,91,219,.35);
+}
+.tab-pane { display: none; }
+.tab-pane.active { display: block; animation: fadeIn .25s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ── SECTION TITLE ── */
+.section-title {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 20px; letter-spacing: .5px; color: var(--primary);
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-title .sticon {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: var(--primary-light);
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+
+/* ── TABLE ── */
+.table-wrap { overflow-x: auto; border-radius: 18px; box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; background: var(--surface); }
+thead tr { background: linear-gradient(90deg, var(--primary) 0%, #748ffc 100%); }
+th {
+  padding: 13px 16px;
+  font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+  color: rgba(255,255,255,.9); text-align: left; font-weight: 800;
+  white-space: nowrap;
+}
+td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px; font-weight: 600; vertical-align: middle;
+  background: var(--surface);
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--primary-light); }
+tbody tr:nth-child(even) td { background: var(--surface2); }
+tbody tr:nth-child(even):hover td { background: var(--primary-light); }
+
+.rank { font-family: 'Fredoka One', sans-serif; font-size: 20px; color: var(--muted); }
+.rank-1 { color: #f59f00; }
+.rank-2 { color: #868e96; }
+.rank-3 { color: #cd7f32; }
+.name-cell { font-weight: 800; font-size: 15px; color: var(--text); }
+.name-avatar {
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.avatar {
+  width: 32px; height: 32px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 900; color: #fff; flex-shrink: 0;
+}
+
+.pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 12px; border-radius: 20px;
+  font-size: 13px; font-weight: 800; letter-spacing: .3px;
+}
+.pill-win  { background: var(--green-light); color: var(--green); }
+.pill-loss { background: var(--red-light);   color: var(--red);   }
+.pill-neu  { background: var(--surface2);    color: var(--muted); }
+.pill-pen  { background: var(--yellow-light);color: var(--yellow);}
+
+.fine-amount { font-family: 'Fredoka One', sans-serif; font-size: 17px; }
+.fine-high { color: var(--red); }
+.fine-med  { color: var(--orange); }
+.fine-low  { color: var(--green); }
+.fine-zero { color: var(--muted); }
+
+.prog-wrap { width: 80px; background: var(--border); border-radius: 8px; height: 8px; }
+.prog-bar  { height: 8px; border-radius: 8px; background: linear-gradient(90deg, var(--primary), #748ffc); transition: width .4s; }
+
+/* ── RULES CARD ── */
+.rules-card {
+  background: linear-gradient(135deg, var(--primary) 0%, #748ffc 100%);
+  border-radius: 20px; padding: 22px 28px;
+  display: flex; gap: 28px; flex-wrap: wrap; align-items: center;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 28px rgba(59,91,219,.28);
+}
+.rule-item { display: flex; flex-direction: column; gap: 4px; }
+.rule-item .rl { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.7); }
+.rule-item .rv { font-family: 'Fredoka One', sans-serif; font-size: 30px; color: #fff; line-height: 1; }
+
+.adj-btn {
+  width: 34px; height: 34px; border-radius: 10px;
+  border: 2px solid rgba(255,255,255,.4);
+  background: rgba(255,255,255,.15);
+  color: #fff; font-size: 20px; font-weight: 900;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .15s; line-height: 1;
+}
+.adj-btn:hover { background: rgba(255,255,255,.3); transform: scale(1.1); }
+
+/* ── TOTAL BAR ── */
+.total-bar {
+  background: var(--red-light);
+  border: 2px solid #ffc9c9;
+  border-radius: 16px; padding: 18px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  margin-top: 16px; flex-wrap: wrap;
+}
+.total-bar .tl { font-size: 14px; font-weight: 800; color: var(--red); display: flex; align-items: center; gap: 8px; }
+.total-bar .tv { font-family: 'Fredoka One', sans-serif; font-size: 34px; color: var(--red); }
+
+/* ── FORM ── */
+.form-card {
+  background: var(--surface); border-radius: 20px;
+  padding: 28px; margin-bottom: 20px; box-shadow: var(--shadow);
+  border: 2px solid var(--border);
+}
+.form-section-label {
+  font-size: 13px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--primary); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 6px;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+@media(max-width:560px){ .form-row { grid-template-columns: 1fr; } }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+.form-group select, .form-group input {
+  background: var(--surface2); border: 2px solid var(--border);
+  color: var(--text); padding: 10px 14px;
+  border-radius: 12px; font-family: 'Nunito', sans-serif;
+  font-size: 14px; font-weight: 700; outline: none; transition: border-color .2s, box-shadow .2s;
+}
+.form-group select:focus, .form-group input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59,91,219,.12);
+}
+
+.team-divider {
+  display: flex; align-items: center; gap: 12px; margin: 14px 0;
+}
+.team-divider-line { flex: 1; height: 2px; background: var(--border); border-radius: 2px; }
+.team-divider-badge {
+  background: linear-gradient(135deg, var(--orange) 0%, #ff922b 100%);
+  color: #fff; font-family: 'Fredoka One', sans-serif;
+  font-size: 18px; padding: 4px 18px; border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(247,103,7,.30);
+}
+
+.score-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: end; margin-bottom: 14px; }
+.vs-badge {
+  background: var(--red); color: #fff;
+  font-family: 'Fredoka One', sans-serif; font-size: 22px;
+  width: 44px; height: 44px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px rgba(224,49,49,.30);
+  margin-bottom: 6px;
+}
+
+.btn {
+  padding: 13px 28px; border-radius: 14px; cursor: pointer;
+  font-family: 'Nunito', sans-serif; font-size: 15px;
+  font-weight: 800; letter-spacing: .5px; border: none; transition: all .2s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, #748ffc 100%);
+  color: #fff; box-shadow: 0 6px 20px rgba(59,91,219,.35);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(59,91,219,.42); }
+
+/* ── MATCH LIST ── */
+.match-item {
+  background: var(--surface); border-radius: 18px;
+  padding: 16px 20px; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  box-shadow: var(--shadow); border: 2px solid var(--border);
+  transition: transform .2s, box-shadow .2s;
+}
+.match-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: #c5d0f5; }
+.match-no {
+  font-family: 'Fredoka One', sans-serif; font-size: 22px; color: var(--muted);
+  background: var(--surface2); width: 38px; height: 38px;
+  border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.match-team { display: flex; flex-direction: column; gap: 2px; min-width: 110px; }
+.match-team .tl2 { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+.match-team .pls { font-size: 14px; font-weight: 800; color: var(--text); }
+.match-score-box {
+  font-family: 'Fredoka One', sans-serif; font-size: 32px;
+  display: flex; align-items: center; gap: 6px; margin: 0 auto;
+}
+.match-score-box .sc-win  { color: var(--green); }
+.match-score-box .sc-loss { color: var(--red); }
+.match-score-box .sc-sep  { color: var(--muted); font-size: 22px; }
+.win-pill {
+  background: linear-gradient(135deg, var(--green) 0%, #40c057 100%);
+  color: #fff; font-size: 12px; font-weight: 800;
+  padding: 5px 13px; border-radius: 20px;
+  display: flex; align-items: center; gap: 5px;
+  white-space: nowrap; box-shadow: 0 3px 10px rgba(47,158,68,.30);
+}
+.date-pill {
+  background: var(--primary-light); color: var(--primary);
+  font-size: 12px; font-weight: 700;
+  padding: 5px 13px; border-radius: 20px;
+  display: flex; align-items: center; gap: 5px; white-space: nowrap;
+}
+.del-btn {
+  background: var(--red-light); border: 2px solid #ffc9c9; color: var(--red);
+  width: 34px; height: 34px; border-radius: 10px;
+  cursor: pointer; font-size: 14px; font-weight: 800; transition: all .2s;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.del-btn:hover { background: var(--red); color: #fff; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 28px; right: 28px;
+  background: linear-gradient(135deg, var(--primary) 0%, #748ffc 100%);
+  color: #fff; padding: 14px 22px; border-radius: 16px;
+  font-weight: 800; font-size: 14px; display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 32px rgba(59,91,219,.40);
+  transform: translateY(80px); opacity: 0;
+  transition: all .3s cubic-bezier(.34,1.56,.64,1); z-index: 999;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+footer {
+  padding: 36px 0 20px; text-align: center;
+  color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: 1px;
+}
+
+/* avatar colors */
+.av0{background:#3b5bdb;} .av1{background:#f76707;} .av2{background:#2f9e44;}
+.av3{background:#7048e8;} .av4{background:#e03131;} .av5{background:#0c8599;}
+.av6{background:#f59f00;} .av7{background:#a61e4d;} .av8{background:#364fc7;}
+.av9{background:#087f5b;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo-wrap">
+      <div class="logo-circle">🏓</div>
+      <div class="logo-badge">VTNet</div>
+    </div>
+    <div class="header-text">
+      <h1>CLB Pickleball VTNet</h1>
+      <div class="tagline"><div class="tagline-dot"></div>Hệ thống thống kê & tiền phạt<div class="tagline-dot"></div></div>
+    </div>
+    <div class="period-pill">
+      <div class="pq">⏱ Quý 3 / 2026</div>
+      <div class="pn">📌 Thu phạt đầu quý tiếp theo</div>
+    </div>
+  </div>
+</header>
+
+<!-- STATS -->
+<div class="stats-grid" id="statsGrid"></div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('standings',this)">🏆 Xếp Hạng</button>
+  <button class="tab-btn" onclick="switchTab('fines',this)">💰 Tiền Phạt</button>
+  <button class="tab-btn" onclick="switchTab('matches',this)">📋 Trận Đấu</button>
+  <button class="tab-btn" onclick="switchTab('add',this)">➕ Nhập Kết Quả</button>
+</div>
+
+<!-- TAB: STANDINGS -->
+<div class="tab-pane active" id="tab-standings">
+  <div class="section-title"><span class="sticon">🏅</span> Bảng Xếp Hạng Thành Viên</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>#</th><th>Thành Viên</th><th>📋 Phải đấu</th>
+        <th>⚡ Đã đấu</th><th>✅ Thắng</th><th>❌ Thua</th>
+        <th>⏳ Chưa đấu</th><th>📊 Tiến độ</th>
+      </tr></thead>
+      <tbody id="standingsBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB: FINES -->
+<div class="tab-pane" id="tab-fines">
+  <div class="section-title"><span class="sticon">💸</span> Bảng Tiền Phạt</div>
+  <div class="rules-card">
+    <div class="rule-item">
+      <span class="rl">📋 Số trận quy định</span>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+        <button class="adj-btn" onclick="adjustRule('requiredMatches',-1)">−</button>
+        <span class="rv" id="ruleMatches">10</span>
+        <button class="adj-btn" onclick="adjustRule('requiredMatches',1)">+</button>
+      </div>
+    </div>
+    <div class="rule-item">
+      <span class="rl">💵 Phạt/trận · bước 5.000đ</span>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+        <button class="adj-btn" onclick="adjustRule('finePerMatch',-5000)">−</button>
+        <span class="rv" id="ruleFine">30.000đ</span>
+        <button class="adj-btn" onclick="adjustRule('finePerMatch',5000)">+</button>
+      </div>
+    </div>
+    <div class="rule-item">
+      <span class="rl">🧮 Công thức</span>
+      <span class="rv" style="font-size:15px;line-height:1.5;opacity:.95">(❌ Thua + ⏳ Chưa đấu)<br>× Mức phạt</span>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>#</th><th>Thành Viên</th><th>⚡ Đã đấu</th>
+        <th>❌ Thua</th><th>⏳ Chưa đấu</th>
+        <th>🔢 Tổng trận phạt</th><th>💰 Tiền phạt (VNĐ)</th>
+      </tr></thead>
+      <tbody id="finesBody"></tbody>
+    </table>
+  </div>
+  <div class="total-bar">
+    <span class="tl">🏦 Tổng tiền phạt cả CLB</span>
+    <span class="tv" id="totalFine">0đ</span>
+  </div>
+</div>
+
+<!-- TAB: MATCHES -->
+<div class="tab-pane" id="tab-matches">
+  <div class="section-title"><span class="sticon">⚔️</span> Lịch Sử Trận Đấu</div>
+  <div id="matchList"><p style="color:var(--muted);padding:32px;text-align:center;font-weight:700;font-size:15px;">🏓 Chưa có trận đấu nào. Hãy nhập kết quả!</p></div>
+</div>
+
+<!-- TAB: ADD -->
+<div class="tab-pane" id="tab-add">
+  <div class="section-title"><span class="sticon">✍️</span> Nhập Kết Quả Trận Đấu</div>
+  <div class="form-card">
+
+    <div class="form-section-label">🔵 Đội 1</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>👤 Người chơi A</label>
+        <select id="t1p1"></select>
+      </div>
+      <div class="form-group">
+        <label>👤 Người chơi B</label>
+        <select id="t1p2"></select>
+      </div>
+    </div>
+
+    <div class="score-row">
+      <div class="form-group">
+        <label>🎯 Tỉ số Đội 1</label>
+        <input type="number" id="score1" min="0" max="99" value="10">
+      </div>
+      <div style="display:flex;align-items:flex-end;padding-bottom:6px">
+        <div class="vs-badge">VS</div>
+      </div>
+      <div class="form-group">
+        <label>🎯 Tỉ số Đội 2</label>
+        <input type="number" id="score2" min="0" max="99" value="11">
+      </div>
+    </div>
+
+    <div class="team-divider">
+      <div class="team-divider-line"></div>
+      <div class="team-divider-badge">🔴 Đội 2</div>
+      <div class="team-divider-line"></div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>👤 Người chơi A</label>
+        <select id="t2p1"></select>
+      </div>
+      <div class="form-group">
+        <label>👤 Người chơi B</label>
+        <select id="t2p2"></select>
+      </div>
+    </div>
+
+    <div class="form-row" style="max-width:320px">
+      <div class="form-group">
+        <label>📅 Ngày thi đấu</label>
+        <input type="date" id="matchDate">
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="addMatch()">🏆 Lưu Kết Quả</button>
+  </div>
+  <p style="font-size:13px;color:var(--muted);font-weight:700;">
+    💡 Công thức phạt: (Số trận thua + Số trận chưa đấu) × Mức tiền quy định
+  </p>
+</div>
+
+</div><!-- /container -->
+
+<div class="toast" id="toast"></div>
+<footer>🏓 CLB Pickleball VTNet · Hệ thống quản lý nội bộ · Quý 3/2026</footer>
+
+<script>
+const RULE = { requiredMatches: 10, finePerMatch: 30000 };
+
+const AVATAR_COLORS = ['av0','av1','av2','av3','av4','av5','av6','av7','av8','av9'];
+
+let members = [
+  "Việt Cường","Văn Luận","Hoài Sơn","Quang Tùng","Minh Tiến",
+  "Văn Hạnh","Minh Thuần","Hồng Lĩnh","Tiến Đạt","Dư Cường"
+].map((name,i) => ({ name, avatarClass: AVATAR_COLORS[i % AVATAR_COLORS.length] }));
+
+let matches = [
+  { id:1, date:'2026-07-01', team1:["Việt Cường","Văn Luận"],    score1:10, score2:11, team2:["Hoài Sơn","Quang Tùng"] },
+  { id:2, date:'2026-07-01', team1:["Minh Thuần","Tiến Đạt"],    score1:10, score2:11, team2:["Quang Tùng","Văn Hạnh"] },
+];
+let nextId = 3;
+
+function avatarOf(name) {
+  const m = members.find(x => x.name === name);
+  return m ? m.avatarClass : 'av0';
+}
+function initials(name) { return name.split(' ').map(w=>w[0]).slice(-2).join('').toUpperCase(); }
+
+function computeStats() {
+  const stats = {};
+  members.forEach(m => { stats[m.name] = { played:0, wins:0, losses:0 }; });
+  matches.forEach(match => {
+    const t1won = match.score1 > match.score2;
+    const winners = t1won ? match.team1 : match.team2;
+    const losers  = t1won ? match.team2 : match.team1;
+    [...match.team1,...match.team2].forEach(p => { if(stats[p]) stats[p].played++; });
+    winners.forEach(p => { if(stats[p]) stats[p].wins++; });
+    losers.forEach(p  => { if(stats[p]) stats[p].losses++; });
+  });
+  return stats;
+}
+
+function computeFine(stat) {
+  const notPlayed = Math.max(0, RULE.requiredMatches - stat.played);
+  return (stat.losses + notPlayed) * RULE.finePerMatch;
+}
+
+function fmt(n) { return n.toLocaleString('vi-VN') + 'đ'; }
+
+function nameCell(name) {
+  return `<div class="name-avatar">
+    <div class="avatar ${avatarOf(name)}">${initials(name)}</div>
+    <span class="name-cell">${name}</span>
+  </div>`;
+}
+
+function render() {
+  const stats = computeStats();
+  let totalFine = 0, totalWins = 0;
+  members.forEach(m => { totalWins += stats[m.name].wins; totalFine += computeFine(stats[m.name]); });
+
+  // STAT CARDS
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#eef2ff">👥</div>
+      <div><div class="s-label">Thành viên</div><div class="s-value" style="color:var(--primary)">${members.length}</div><div class="s-sub">CLB VTNet</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:var(--orange-light)">⚡</div>
+      <div><div class="s-label">Tổng trận đấu</div><div class="s-value" style="color:var(--orange)">${matches.length}</div><div class="s-sub">trận đã diễn ra</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:var(--green-light)">🏅</div>
+      <div><div class="s-label">Chiến thắng</div><div class="s-value" style="color:var(--green)">${totalWins}</div><div class="s-sub">tổng lượt thắng</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:var(--red-light)">💰</div>
+      <div><div class="s-label">Tổng tiền phạt</div><div class="s-value" style="color:var(--red);font-size:22px">${fmt(totalFine)}</div><div class="s-sub">Quý 3/2026</div></div>
+    </div>`;
+
+  // STANDINGS
+  const sorted = members.map(m=>({...m,...stats[m.name]}))
+    .sort((a,b) => b.wins-a.wins || a.losses-b.losses || b.played-a.played);
+  document.getElementById('standingsBody').innerHTML = sorted.map((s,i) => {
+    const pct = Math.min(100, Math.round(s.played/RULE.requiredMatches*100));
+    const rankLabel = i===0?'🥇':i===1?'🥈':i===2?'🥉':`<span class="rank">${i+1}</span>`;
+    return `<tr>
+      <td>${rankLabel}</td>
+      <td>${nameCell(s.name)}</td>
+      <td><strong>${RULE.requiredMatches}</strong></td>
+      <td>${s.played}</td>
+      <td><span class="pill pill-win">✅ ${s.wins}</span></td>
+      <td><span class="pill ${s.losses>0?'pill-loss':'pill-neu'}">❌ ${s.losses}</span></td>
+      <td><span class="pill pill-pen">⏳ ${RULE.requiredMatches-s.played}</span></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="prog-wrap"><div class="prog-bar" style="width:${pct}%"></div></div>
+          <span style="font-size:12px;font-weight:800;color:var(--muted)">${pct}%</span>
+        </div>
+      </td></tr>`;
+  }).join('');
+
+  // FINES
+  document.getElementById('ruleMatches').textContent = RULE.requiredMatches;
+  document.getElementById('ruleFine').textContent = fmt(RULE.finePerMatch);
+  const finesSorted = members.map(m=>({...m,...stats[m.name]})).sort((a,b)=>computeFine(b)-computeFine(a));
+  let grand = 0;
+  document.getElementById('finesBody').innerHTML = finesSorted.map((s,i) => {
+    const fine = computeFine(s);
+    grand += fine;
+    const notPlayed = Math.max(0, RULE.requiredMatches-s.played);
+    const pen = s.losses + notPlayed;
+    const fineClass = fine===0?'fine-amount fine-zero':fine>=300000?'fine-amount fine-high':fine>=150000?'fine-amount fine-med':'fine-amount fine-low';
+    return `<tr>
+      <td><span class="rank">${i+1}</span></td>
+      <td>${nameCell(s.name)}</td>
+      <td>${s.played}</td>
+      <td><span class="pill pill-loss">❌ ${s.losses}</span></td>
+      <td><span class="pill pill-pen">⏳ ${notPlayed}</span></td>
+      <td style="text-align:center"><span class="pill" style="background:var(--purple-light);color:var(--purple);font-size:14px">🔢 ${pen}</span></td>
+      <td><span class="${fineClass}">${fmt(fine)}</span></td></tr>`;
+  }).join('');
+  document.getElementById('totalFine').textContent = fmt(grand);
+
+  // MATCHES
+  const ml = document.getElementById('matchList');
+  if (!matches.length) {
+    ml.innerHTML = '<p style="color:var(--muted);padding:32px;text-align:center;font-weight:700;font-size:15px;">🏓 Chưa có trận đấu nào. Hãy nhập kết quả!</p>';
+  } else {
+    ml.innerHTML = matches.map((m,i) => {
+      const t1won = m.score1 > m.score2;
+      const winner = (t1won ? m.team1 : m.team2).join(' & ');
+      const dateStr = m.date ? new Date(m.date).toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'}) : '';
+      const s1class = t1won ? 'sc-win' : 'sc-loss';
+      const s2class = t1won ? 'sc-loss' : 'sc-win';
+      return `<div class="match-item">
+        <div class="match-no">${i+1}</div>
+        <div class="match-team">
+          <span class="tl2">🔵 Đội 1</span>
+          <span class="pls">${m.team1.join(' & ')}</span>
+        </div>
+        <div class="match-score-box">
+          <span class="${s1class}">${m.score1}</span>
+          <span class="sc-sep">:</span>
+          <span class="${s2class}">${m.score2}</span>
+        </div>
+        <div class="match-team">
+          <span class="tl2">🔴 Đội 2</span>
+          <span class="pls">${m.team2.join(' & ')}</span>
+        </div>
+        <span class="win-pill">🏆 ${winner}</span>
+        ${dateStr ? `<span class="date-pill">📅 ${dateStr}</span>` : ''}
+        <button class="del-btn" onclick="deleteMatch(${m.id})" title="Xóa">🗑</button>
+      </div>`;
+    }).join('');
+  }
+
+  // SELECTS
+  ['t1p1','t1p2','t2p1','t2p2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el._hasListener) { el.addEventListener('change', refreshSelects); el._hasListener = true; }
+  });
+  refreshSelects();
+}
+
+function refreshSelects() {
+  const ids = ['t1p1','t1p2','t2p1','t2p2'];
+  const vals = {}; ids.forEach(id => { vals[id] = document.getElementById(id).value; });
+  ids.forEach(id => {
+    const others = ids.filter(o=>o!==id).map(o=>vals[o]).filter(Boolean);
+    const sel = document.getElementById(id);
+    sel.innerHTML = '<option value="">— Chọn —</option>' +
+      members.map(m => {
+        const ex = others.includes(m.name);
+        return `<option value="${m.name}" ${m.name===vals[id]?'selected':''} ${ex?'disabled':''}>${ex?'✕ ':''} ${m.name}</option>`;
+      }).join('');
+  });
+}
+
+function addMatch() {
+  const t1p1=document.getElementById('t1p1').value, t1p2=document.getElementById('t1p2').value;
+  const t2p1=document.getElementById('t2p1').value, t2p2=document.getElementById('t2p2').value;
+  const s1=parseInt(document.getElementById('score1').value)||0;
+  const s2=parseInt(document.getElementById('score2').value)||0;
+  const date=document.getElementById('matchDate').value;
+  if(!t1p1||!t1p2||!t2p1||!t2p2){showToast('⚠️ Vui lòng chọn đủ 4 người chơi!');return;}
+  if(s1===s2){showToast('⚠️ Tỉ số không được hòa!');return;}
+  if(new Set([t1p1,t1p2,t2p1,t2p2]).size<4){showToast('⚠️ Người chơi không được trùng!');return;}
+  matches.push({id:nextId++,date,team1:[t1p1,t1p2],score1:s1,score2:s2,team2:[t2p1,t2p2]});
+  render(); showToast('🏆 Đã lưu kết quả trận đấu!');
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-matches').classList.add('active');
+  document.querySelectorAll('.tab-btn')[2].classList.add('active');
+}
+
+function deleteMatch(id) {
+  if(!confirm('🗑 Xóa trận đấu này?'))return;
+  matches=matches.filter(m=>m.id!==id); render(); showToast('🗑 Đã xóa trận đấu.');
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showToast(msg) {
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+function adjustRule(key, delta) {
+  if(key==='requiredMatches') RULE.requiredMatches=Math.max(1,RULE.requiredMatches+delta);
+  else if(key==='finePerMatch') RULE.finePerMatch=Math.max(0,RULE.finePerMatch+delta);
+  render();
+}
+
+document.getElementById('matchDate').value = new Date().toISOString().slice(0,10);
+render();
+</script>
+</body>
+</html>
