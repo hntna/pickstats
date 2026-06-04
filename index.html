@@ -400,7 +400,7 @@ footer{padding:32px 0 18px;text-align:center;color:var(--muted);font-size:12px;f
   <div class="modal">
     <div class="modal-title">🔐 Đăng nhập Admin</div>
     <div class="modal-sub">Chỉ quản trị viên mới có thể nhập &amp; chỉnh sửa kết quả</div>
-    <div class="form-group"><label>👤 Tên đăng nhập</label><input type="text" id="loginUser" placeholder="Nhập username" autocomplete="off"></div>
+    <div class="form-group"><label>📧 Email Admin</label><input type="email" id="loginUser" placeholder="Nhập email admin" autocomplete="off"></div>
     <div class="form-group"><label>🔑 Mật khẩu</label><input type="password" id="loginPass" placeholder="Nhập mật khẩu" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <div class="modal-error" id="loginError">❌ Sai tên đăng nhập hoặc mật khẩu!</div>
     <div class="modal-btns">
@@ -462,6 +462,7 @@ footer{padding:32px 0 18px;text-align:center;color:var(--muted);font-size:12px;f
      ═══════════════════════════════════════════════════════════ -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 
 <script>
 // ══════════════════════════════════════════════════════════════
@@ -479,57 +480,88 @@ const firebaseConfig = {
   appId: "1:34095316642:web:ed3a750a582360b42ca1fb"
 };
 
-// ══════════════════════════════════════════════════════════════
-//  ⚠️  BẢO MẬT: Mật khẩu admin đang được lưu trong mã nguồn.
-//  Nếu repository là PUBLIC trên GitHub, bất kỳ ai cũng có thể
-//  đọc được. Hãy đổi mật khẩu nếu cần bảo mật cao hơn.
-// ══════════════════════════════════════════════════════════════
-const ADMINS = { admin: 'pickleball2026', vtnet: 'vtnet@123' };
-
 // ── FIREBASE INIT ────────────────────────────────────────────
 firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+const db   = firebase.database();
+const auth = firebase.auth();                // Firebase Authentication
 const DATA_REF = db.ref('vtnet_q3_2026');   // node gốc trong Realtime DB
 
-// ── AUTH ─────────────────────────────────────────────────────
+// ── AUTH STATE (Firebase Authentication) ─────────────────────
+// Không còn mật khẩu hardcode — xác thực qua Firebase Auth thật
 let isAdmin = false;
 let currentAdmin = '';
+
+// Lắng nghe trạng thái đăng nhập — tự động cập nhật khi login/logout
+auth.onAuthStateChanged(user => {
+  if (user) {
+    // Đã xác thực bằng Firebase Auth
+    isAdmin = true;
+    currentAdmin = user.email;
+    document.body.classList.add('is-admin');
+    document.getElementById('statusDot').classList.add('online');
+    document.getElementById('statusText').textContent = '🛡 ' + user.email;
+    document.getElementById('btnLogin').style.display = 'none';
+    document.getElementById('btnLogout').style.display = 'flex';
+    document.getElementById('tabAddBtn').style.display = 'flex';
+  } else {
+    // Chưa đăng nhập hoặc đã đăng xuất
+    isAdmin = false;
+    currentAdmin = '';
+    document.body.classList.remove('is-admin');
+    document.getElementById('statusDot').classList.remove('online');
+    document.getElementById('statusText').textContent = '👁 Chế độ xem';
+    document.getElementById('btnLogin').style.display = 'flex';
+    document.getElementById('btnLogout').style.display = 'none';
+    document.getElementById('tabAddBtn').style.display = 'none';
+    const activePane = document.querySelector('.tab-pane.active');
+    if (activePane && activePane.id === 'tab-add')
+      switchTabById('standings', document.querySelector('.tab-btn'));
+  }
+  render();
+});
 
 function openLoginModal() {
   document.getElementById('loginUser').value = '';
   document.getElementById('loginPass').value = '';
-  document.getElementById('loginError').style.display = 'none';
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  errEl.textContent = '❌ Sai email hoặc mật khẩu!';
   openModal('loginModal');
 }
+
 function doLogin() {
-  const u = document.getElementById('loginUser').value.trim();
-  const p = document.getElementById('loginPass').value;
-  if (ADMINS[u] && ADMINS[u] === p) {
-    isAdmin = true; currentAdmin = u;
-    document.body.classList.add('is-admin');
-    document.getElementById('statusDot').classList.add('online');
-    document.getElementById('statusText').textContent = '🛡 Admin: ' + u;
-    document.getElementById('btnLogin').style.display = 'none';
-    document.getElementById('btnLogout').style.display = 'flex';
-    document.getElementById('tabAddBtn').style.display = 'flex';
-    closeModal('loginModal'); render();
-    showToast('🎉 Chào mừng ' + u + '!', 'green');
-  } else {
-    document.getElementById('loginError').style.display = 'block';
-    document.getElementById('loginPass').value = '';
+  const email = document.getElementById('loginUser').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+  if (!email || !pass) {
+    errEl.textContent = '⚠️ Nhập đủ email và mật khẩu!';
+    errEl.style.display = 'block'; return;
   }
+  // Loading state
+  const btn = document.querySelector('#loginModal .btn-confirm');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Đang đăng nhập...'; }
+  auth.signInWithEmailAndPassword(email, pass)
+    .then(() => {
+      closeModal('loginModal');
+      showToast('🎉 Đăng nhập thành công!', 'green');
+    })
+    .catch(err => {
+      const msg = (err.code === 'auth/invalid-credential'
+        || err.code === 'auth/wrong-password'
+        || err.code === 'auth/user-not-found'
+        || err.code === 'auth/invalid-email')
+        ? 'Sai email hoặc mật khẩu!' : 'Lỗi kết nối, thử lại sau!';
+      errEl.textContent = '❌ ' + msg;
+      errEl.style.display = 'block';
+      document.getElementById('loginPass').value = '';
+    })
+    .finally(() => {
+      if (btn) { btn.disabled = false; btn.textContent = '🚀 Đăng nhập'; }
+    });
 }
+
 function logout() {
-  isAdmin = false; currentAdmin = '';
-  document.body.classList.remove('is-admin');
-  document.getElementById('statusDot').classList.remove('online');
-  document.getElementById('statusText').textContent = '👁 Chế độ xem';
-  document.getElementById('btnLogin').style.display = 'flex';
-  document.getElementById('btnLogout').style.display = 'none';
-  document.getElementById('tabAddBtn').style.display = 'none';
-  const activePane = document.querySelector('.tab-pane.active');
-  if (activePane && activePane.id === 'tab-add') switchTabById('standings', document.querySelector('.tab-btn'));
-  render(); showToast('👋 Đã đăng xuất', 'red');
+  auth.signOut().then(() => showToast('👋 Đã đăng xuất', 'red'));
 }
 
 // ── DATA ─────────────────────────────────────────────────────
